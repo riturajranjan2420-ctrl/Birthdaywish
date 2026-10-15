@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Surprise for Saniya</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: Georgia, serif;
+    color: #fff2f7;
+    background: #0b0917;
+}
+
+#background {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 25%, #472947 0%, transparent 60%),
+        radial-gradient(ellipse at 15% 80%, #183a40 0%, transparent 45%),
+        linear-gradient(145deg, #100a1d, #211329, #080812);
+}
+
+#stars, #particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #fff7e5;
+    border-radius: 50%;
+    animation: twinkle 2.5s infinite alternate;
+}
+
+@keyframes twinkle {
+    from { opacity: .2; transform: scale(.7); }
+    to { opacity: 1; transform: scale(1.5); }
+}
+
+.particle {
+    position: absolute;
+    bottom: -35px;
+    color: #ffd1e3;
+    font-size: 23px;
+    animation: floatUp linear forwards;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) rotate(0);
+        opacity: 0;
+    }
+    15% { opacity: .8; }
+    85% { opacity: .5; }
+    100% {
+        transform: translateY(-110vh) rotate(240deg);
+        opacity: 0;
+    }
+}
+
+#progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: #ffffff15;
+    z-index: 10;
+}
+
+#bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #ffc0d9, #ffe5ad);
+    transition: width .4s ease;
+}
+
+#musicIcon {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    z-index: 5;
+    font: 22px Arial, sans-serif;
+    color: #ffe3b0;
+}
+
+#app {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 35px 22px 65px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.slide {
+    display: none;
+    width: 100%;
+    max-width: 600px;
+}
+
+.slide.active {
+    display: block;
+    animation: appear .45s ease;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.label {
+    font: 15px Arial, sans-serif;
+    letter-spacing: 4px;
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #f4bfd7;
+    margin-bottom: 27px;
+}
+
+h1 {
+    font-size: clamp(60px, 14vw, 92px);
+    line-height: 1.08;
+    font-weight: normal;
+    color: #ffe2ad;
+    margin-bottom: 25px;
+}
+
+h2 {
+    font-size: clamp(55px, 12vw, 81px);
+    line-height: 1.08;
+    font-weight: normal;
+    color: #ffe4f0;
+    margin-bottom: 28px;
+    overflow-wrap: break-word;
+}
+
+p {
+    font-family: Arial, sans-serif;
+    font-size: clamp(28px, 7vw, 35px);
+    line-height: 1.55;
+    color: #f5edf5;
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.line {
+    width: 60px;
+    height: 1px;
+    background: #ffe0b0;
+    margin: 25px auto;
+}
+
+.heart {
+    font-size: 52px;
+    color: #ffd0e3;
+    margin-bottom: 23px;
+    animation: heartbeat 1.7s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    50% { transform: scale(1.1); }
+}
+
+#startBtn {
+    display: inline-block;
+    margin-top: 35px;
+    padding: 19px 30px;
+    border: 1px solid #ffe2b0;
+    border-radius: 40px;
+    background: #ffffff10;
+    color: #fff0d3;
+    font: 15px Arial, sans-serif;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+.small {
+    margin-top: 28px;
+    font: 14px Arial, sans-serif;
+    letter-spacing: 3px;
+    line-height: 1.8;
+    color: #ffe0b0;
+}
+
+#hint {
+    position: absolute;
+    bottom: 25px;
+    left: 10px;
+    right: 10px;
+    z-index: 4;
+    text-align: center;
+    font: 13px Arial, sans-serif;
+    letter-spacing: 3px;
+    color: #ffe8f0a6;
+    animation: twinkle 2s infinite alternate;
+}
+
+/* Smaller screens: keep text readable without clipping */
+@media (max-height: 650px) {
+    #app {
+        padding-top: 22px;
+        padding-bottom: 55px;
+    }
+
+    h1 {
+        font-size: clamp(48px, 11vw, 68px);
+    }
+
+    h2 {
+        font-size: clamp(44px, 10vw, 60px);
+        margin-bottom: 16px;
+    }
+
+    p {
+        font-size: clamp(23px, 5.5vw, 29px);
+        line-height: 1.4;
+    }
+
+    .label {
+        font-size: 12px;
+        margin-bottom: 14px;
+    }
+
+    .line {
+        margin: 16px auto;
+    }
+
+    .heart {
+        font-size: 42px;
+        margin-bottom: 12px;
+    }
+
+    .small {
+        font-size: 12px;
+        margin-top: 16px;
+    }
+
+    #startBtn {
+        margin-top: 20px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div id="background">
+
+    <div id="stars"></div>
+    <div id="particles"></div>
+
+    <div id="progress">
+        <div id="bar"></div>
+    </div>
+
+    <div id="musicIcon">♫</div>
+
+    <audio id="music" src="birthday.mp3" loop preload="auto"></audio>
+
+    <main id="app">
+
+        <section class="slide active" id="intro">
+            <div class="label">A LITTLE SURPRISE FOR YOU</div>
+            <div class="heart">♡</div>
+
+            <h2 style="font-size:clamp(45px,10vw,67px)">
+                Something<br>Special Awaits
+            </h2>
+
+            <div class="line"></div>
+
+            <p>Made with warm wishes, just for you.</p>
+
+            <button id="startBtn" type="button">
+                TAP TO START ✦
+            </button>
+        </section>
+
+        <section class="slide">
+            <div class="label">A SPECIAL DAY · JUST FOR YOU</div>
+
+            <h1>Happy Birthday<br>Dear Saniya</h1>
+
+            <div class="heart">♡</div>
+            <div class="line"></div>
+
+            <p>
+                May your special day bring you beautiful moments,
+                genuine smiles, and happiness that stays.
+            </p>
+        </section>
+
+        <section class="slide">
+            <div class="label">01 · YOUR DAY</div>
+
+            <h2>A Beautiful Day<br>For a Beautiful Soul</h2>
+
+            <div class="line"></div>
+
+            <p>
+                May life surprise you with wonderful opportunities,
+                peaceful days, and memories worth keeping forever.
+            </p>
+        </section>
+
+        <section class="slide">
+            <div class="label">02 · A LITTLE WISH</div>
+
+            <h2>May Life<br>Be Kind to You</h2>
+
+            <div class="line"></div>
+
+            <p>
+                May your worries become lighter, your hopes grow
+                stronger, and your days be filled with reasons to smile.
+            </p>
+        </section>
+
+        <section class="slide">
+            <div class="label">03 · FOR YOUR HEART</div>
+
+            <h2>Keep Your Light</h2>
+
+            <div class="line"></div>
+
+            <p>
+                Keep growing into the person you want to become.
+                May you always find the strength to be yourself
+                and the courage to follow your dreams.
+            </p>
+        </section>
+
+        <section class="slide">
+            <div class="label">04 · YOUR JOURNEY</div>
+
+            <h2>Beautiful Things<br>Are Ahead</h2>
+
+            <div class="line"></div>
+
+            <p>
+                May your hard work lead to success, your dreams
+                find their way, and every new chapter bring
+                something wonderful.
+            </p>
+        </section>
+
+        <section class="slide">
+            <div class="label">05 · A PRAYER FOR YOU</div>
+
+            <div class="heart">✧</div>
+
+            <h2>May You Always<br>Be Blessed</h2>
+
+            <div class="line"></div>
+
+            <p>
+                May you be blessed with good health, a peaceful heart,
+                sincere people, and strength through every challenge.
+            </p>
+        </section>
+
+        <section class="slide">
+            <div class="label">WITH ALL THE WARM WISHES</div>
+
+            <h1>Happy Birthday<br>Dear Saniya</h1>
+
+            <div class="line"></div>
+
+            <p>
+                May this new year of your life bring unexpected joy,
+                beautiful memories, and countless reasons to smile.
+            </p>
+
+            <div class="heart" style="margin-top:25px">♡</div>
+
+            <div class="small">MAY YOUR WISHES COME TRUE ✦</div>
+        </section>
+
+    </main>
+
+    <div id="hint">TAP TO START</div>
+
+</div>
+<script>
+(function () {
+
+    const app = document.getElementById("app");
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const startBtn = document.getElementById("startBtn");
+    const music = document.getElementById("music");
+    const bar = document.getElementById("bar");
+    const hint = document.getElementById("hint");
+    const stars = document.getElementById("stars");
+    const particles = document.getElementById("particles");
+    const musicIcon = document.getElementById("musicIcon");
+
+    let current = 0;
+    let started = false;
+
+    // Background stars
+    for (let i = 0; i < 85; i++) {
+        const star = document.createElement("span");
+
+        star.className = "star";
+        star.style.left = Math.random() * 100 + "%";
+        star.style.top = Math.random() * 100 + "%";
+        star.style.animationDelay = Math.random() * 3 + "s";
+        star.style.animationDuration =
+            (2 + Math.random() * 3) + "s";
+
+        stars.appendChild(star);
+    }
+
+    // Floating decorations
+    const symbols = ["✦", "♡", "✧", "❀", "⋆", "✺"];
+
+    function createParticle() {
+        const particle = document.createElement("span");
+
+        particle.className = "particle";
+        particle.textContent =
+            symbols[Math.floor(Math.random() * symbols.length)];
+
+        particle.style.left = Math.random() * 100 + "%";
+        particle.style.fontSize =
+            (18 + Math.random() * 16) + "px";
+
+        particle.style.animationDuration =
+            (7 + Math.random() * 6) + "s";
+
+        particles.appendChild(particle);
+
+        setTimeout(function () {
+            particle.remove();
+        }, 14000);
+    }
+
+    for (let i = 0; i < 12; i++) {
+        setTimeout(createParticle, i * 250);
+    }
+
+    setInterval(createParticle, 500);
+
+    // Display slide
+    function showSlide(index) {
+        slides.forEach(function (slide) {
+            slide.classList.remove("active");
+        });
+
+        slides[index].classList.add("active");
+        current = index;
+
+        bar.style.width =
+            ((index + 1) / slides.length * 100) + "%";
+
+        hint.textContent =
+            index === 0
+            ? "TAP TO START"
+            : index === slides.length - 1
+            ? "TAP TO BEGIN AGAIN"
+            : "TAP ANYWHERE TO CONTINUE";
+    }
+
+    // Start once; intro will not appear again
+    startBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+
+        if (started) return;
+
+        started = true;
+
+        // Move to Happy Birthday page
+        showSlide(1);
+
+        // Start music; do not stop it between slides
+        music.play().then(function () {
+            musicIcon.textContent = "♫";
+        }).catch(function () {
+            musicIcon.textContent = "♪";
+        });
+    });
+
+    // Tap anywhere to advance
+    app.addEventListener("click", function (event) {
+        if (!started) return;
+        if (event.target === startBtn) return;
+
+        if (current < slides.length - 1) {
+            showSlide(current + 1);
+        } else {
+            // Loop back to birthday page, not intro
+            showSlide(1);
+        }
+    });
+
+    showSlide(0);
+
+})();
+</script>
+
+</body>
+</html>
